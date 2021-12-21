@@ -69,7 +69,9 @@ fpnew:
   commit: v0.6.5
   domain: [cluster, soc]
 jtag_pulp:
-  commit: v0.1
+  commit: e057acb1ea7320e59137cc5a5efa4a3a88084c94
+  server: https://github.com
+  group:  stefanct
   domain: [soc]
 riscv:
   commit: pulpissimo-v3.4.0
