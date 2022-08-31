@@ -8,8 +8,11 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
+`include "pulp_soc_defines.sv"
+`include "cfi_config.sv" //BACCTODO
 
 module fc_subsystem #(
+    parameter CFI_INSTR_WIDTH     = `CFI_INSTR_WIDTH_DEF, //BACCTODO
     parameter CORE_TYPE           = 0,
     parameter USE_FPU             = 1,
     parameter USE_HWPE            = 1,
@@ -29,7 +32,7 @@ module fc_subsystem #(
     input  logic                      test_en_i,
 
     XBAR_TCDM_BUS.Master              l2_data_master,
-    XBAR_TCDM_BUS.Master              l2_instr_master,
+    XBAR_TCDM_BUS_CFI.Master          l2_instr_master, //BACCTODO
     XBAR_TCDM_BUS.Master              l2_hwpe_master [NB_HWPE_PORTS-1:0],
     APB_BUS.Slave                     apb_slave_eu,
     APB_BUS.Slave                     apb_slave_hwpe,
@@ -71,8 +74,10 @@ module fc_subsystem #(
     logic fetch_en_eu  ;
 
     //Core Instr Bus
-    logic [31:0] core_instr_addr, core_instr_rdata;
-    logic        core_instr_req, core_instr_gnt, core_instr_rvalid, core_instr_err;
+    // BACCTODO instr_width
+    logic [               31:0] core_instr_addr;
+    logic [CFI_INSTR_WIDTH-1:0] core_instr_rdata;
+    logic                       core_instr_req, core_instr_gnt, core_instr_rvalid, core_instr_err;
 
     //Core Data Bus
     logic [31:0] core_data_addr, core_data_rdata, core_data_wdata;
@@ -103,6 +108,7 @@ module fc_subsystem #(
     assign core_data_err         = l2_data_master.r_opc;
 
 
+    // BACCTODO instr_width in L2 instr master
     assign l2_instr_master.req   = core_instr_req;
     assign l2_instr_master.add   = core_instr_addr;
     assign l2_instr_master.wen   = 1'b1;
@@ -120,6 +126,7 @@ module fc_subsystem #(
     if ( USE_IBEX == 0) begin: FC_CORE
     assign boot_addr = boot_addr_i;
     riscv_core #(
+        .INSTR_RDATA_WIDTH   ( CFI_INSTR_WIDTH     ), // BACCTODO
         .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
         .PULP_SECURE         ( 1                   ),
         .PULP_CLUSTER        ( 0                   ),

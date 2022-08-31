@@ -46,7 +46,7 @@ module soc_interconnect_wrap
        input logic rst_ni,
        input logic test_en_i,
        XBAR_TCDM_BUS.Slave      tcdm_fc_data, //Data Port of the Fabric Controller
-       XBAR_TCDM_BUS.Slave      tcdm_fc_instr, //Instruction Port of the Fabric Controller
+       XBAR_TCDM_BUS_CFI.Slave      tcdm_fc_instr, //Instruction Port of the Fabric Controller //BACCTODO
        XBAR_TCDM_BUS.Slave      tcdm_udma_tx, //TX Channel for the uDMA
        XBAR_TCDM_BUS.Slave      tcdm_udma_rx, //RX Channel for the uDMA
        XBAR_TCDM_BUS.Slave      tcdm_debug, //Debug access port from either the legacy or the riscv-debug unit
@@ -145,13 +145,13 @@ module soc_interconnect_wrap
 
     //Wiring signals to interconncet. Unfortunately Synopsys-2019.3 does not support assignment patterns in port lists
     //directly
-    XBAR_TCDM_BUS master_ports[pkg_soc_interconnect::NR_TCDM_MASTER_PORTS](); //increase the package localparma as well
+    XBAR_TCDM_BUS_CFI master_ports[pkg_soc_interconnect::NR_TCDM_MASTER_PORTS](); //increase the package localparma as well
                                 //if you want to add new master ports. The parameter is used by other IPs to calcualte
                                 //the required AXI ID width.
 
     //Assign Master Ports to array
     `TCDM_ASSIGN_INTF(master_ports[0], tcdm_fc_data_addr_remapped)
-    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr)
+    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr) // BACCTODO this should be a cfi bus, can we change this for only one array entry?
     `TCDM_ASSIGN_INTF(master_ports[2], tcdm_udma_tx)
     `TCDM_ASSIGN_INTF(master_ports[3], tcdm_udma_rx)
     `TCDM_ASSIGN_INTF(master_ports[4], tcdm_debug)

@@ -1,6 +1,6 @@
 `ifndef TCDM_EXPLODE_MACROS_SVH
 `define TCDM_EXPLODE_MACROS_SVH
-
+`include "cfi_config.sv" //BACCTODO
 
   `define TCDM_EXPLODE_ARRAY_DECLARE(signal_prefix, length) \
 logic [length-1:0]                 signal_prefix``_req; \
@@ -23,6 +23,29 @@ logic                  signal_prefix``_gnt; \
 logic                  signal_prefix``_r_opc; \
 logic [31:0]           signal_prefix``_r_rdata; \
 logic                  signal_prefix``_r_valid;
+
+//BACCTODO // CFI_INSTR_WIDTH was undefined here
+  `define TCDM_CFI_EXPLODE_ARRAY_DECLARE(signal_prefix, length) \
+logic [length-1:0]                           signal_prefix``_req; \
+logic [length-1:0][31:0]                     signal_prefix``_add; \
+logic [length-1:0]                           signal_prefix``_wen; \
+logic [length-1:0][`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_wdata; \
+logic [length-1:0][3:0]                      signal_prefix``_be; \
+logic [length-1:0]                           signal_prefix``_gnt; \
+logic [length-1:0]                           signal_prefix``_r_opc; \
+logic [length-1:0][`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_r_rdata; \
+logic [length-1:0]                           signal_prefix``_r_valid;
+
+  `define TCDM_CFI_EXPLODE_DECLARE(signal_prefix) \
+logic                            signal_prefix``_req; \
+logic [31:0]                     signal_prefix``_add; \
+logic                            signal_prefix``_wen; \
+logic [`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_wdata; \
+logic [3:0]                      signal_prefix``_be; \
+logic                            signal_prefix``_gnt; \
+logic                            signal_prefix``_r_opc; \
+logic [`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_r_rdata; \
+logic                            signal_prefix``_r_valid;
 
 //Connect a TCDM Master Interface to a set of exploded interface signals
   `define TCDM_SLAVE_EXPLODE(iface, exploded_prefix, postfix) \

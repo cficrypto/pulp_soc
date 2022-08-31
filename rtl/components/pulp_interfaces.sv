@@ -17,18 +17,59 @@
 
 interface XBAR_TCDM_BUS_64;
 
+// REQUEST CHANNEL
+//***************************************
+logic        req;
+logic [31:0] add;
+logic        wen;
+logic [63:0] wdata;
+logic [7:0]  be;
+logic        gnt;
+
+// RESPONSE CHANNEL
+logic        r_opc;
+logic [63:0] r_rdata;
+logic        r_valid;
+
+// Master Side
+//***************************************
+modport Master
+(
+   output req, output add, output wen, output wdata, output be,
+   input gnt, input r_rdata, input r_opc, input r_valid
+);
+
+// Slave Side
+//***************************************
+modport Slave
+(
+   input req, input add, input wen, input wdata, input be,
+   output gnt, output r_rdata, output r_opc, output r_valid
+);
+
+endinterface // XBAR_TCDM_BUS_64
+
+//**********************************************************
+//**************** XBAR TCDM BUS CFI ************************
+//**********************************************************
+// BACCTODO do we need converter to the 32 Bit BUS?
+
+interface XBAR_TCDM_BUS_CFI #(
+   parameter CFI_INSTR_WIDTH = 40
+);
+
    // REQUEST CHANNEL
    //***************************************
    logic        req;
    logic [31:0] add;
    logic        wen;
-   logic [63:0] wdata;
+   logic [CFI_INSTR_WIDTH-1:0] wdata;
    logic [7:0]  be;
    logic        gnt;
 
    // RESPONSE CHANNEL
    logic        r_opc;
-   logic [63:0] r_rdata;
+   logic [CFI_INSTR_WIDTH-1:0] r_rdata;
    logic        r_valid;
 
    // Master Side
@@ -47,7 +88,7 @@ interface XBAR_TCDM_BUS_64;
       output gnt, output r_rdata, output r_opc, output r_valid
    );
 
-endinterface // XBAR_TCDM_BUS_64
+endinterface // XBAR_TCDM_BUS_CFI
 
 //**********************************************************
 //**************** XBAR TCDM BUS ***************************
