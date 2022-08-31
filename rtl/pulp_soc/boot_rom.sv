@@ -12,7 +12,8 @@
 `include "soc_mem_map.svh"
 
 module boot_rom #(
-    parameter ROM_ADDR_WIDTH = 13
+    parameter ROM_ADDR_WIDTH = 13,
+    parameter ROM_DATA_WIDTH = 40
     )
     (
      input logic             clk_i,
@@ -40,7 +41,7 @@ module boot_rom #(
 
         generic_rom #(
             .ADDR_WIDTH(ROM_ADDR_WIDTH-2), //The ROM uses 32-bit word addressing while the bus addresses bytes
-            .DATA_WIDTH(32)
+            .DATA_WIDTH(ROM_DATA_WIDTH)
          ) rom_mem_i (
             .CLK            (  clk_i                ),
             .CEN            (  ~mem_slave.req        ),
@@ -55,7 +56,7 @@ module boot_rom #(
 
     fpga_bootrom #(
                    .ADDR_WIDTH(ROM_ADDR_WIDTH-2), //The ROM uses 32-bit word addressing while the bus addresses bytes
-                   .DATA_WIDTH(32)
+                   .DATA_WIDTH(ROM_DATA_WIDTH)
                    ) rom_mem_i (
                             .CLK(clk_i),
                             .CEN(~mem_slave.req),
@@ -67,3 +68,4 @@ module boot_rom #(
     `endif
 
 endmodule
+
