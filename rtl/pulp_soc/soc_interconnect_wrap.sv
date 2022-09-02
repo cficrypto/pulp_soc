@@ -56,7 +56,7 @@ module soc_interconnect_wrap
        APB_BUS.Master           apb_peripheral_bus, // Connects to all the SoC Peripherals
        XBAR_TCDM_BUS.Master     l2_interleaved_slaves[NR_L2_PORTS], // Connects to the interleaved memory banks
        XBAR_TCDM_BUS.Master     l2_private_slaves[2], // Connects to core-private memory banks
-       XBAR_TCDM_BUS.Master     boot_rom_slave //Connects to the bootrom
+       XBAR_TCDM_BUS_CFI.Master     boot_rom_slave //Connects to the bootrom //BACCTODO
      );
 
     //**Do not change these values unles you verified that all downstream IPs are properly parametrized and support it**
@@ -67,6 +67,7 @@ module soc_interconnect_wrap
     //////////////////////////////////////////////////////////////
     // 64-bit AXI to TCDM Bridge (Cluster to SoC communication) //
     //////////////////////////////////////////////////////////////
+    // BACCTODO should this use the wider bus? _CFI
     XBAR_TCDM_BUS axi_bridge_2_interconnect[pkg_soc_interconnect::NR_CLUSTER_2_SOC_TCDM_MASTER_PORTS](); //We need 4
                                                                                                          //32-bit TCDM
                                                                                                          //ports to
@@ -151,7 +152,7 @@ module soc_interconnect_wrap
 
     //Assign Master Ports to array
     `TCDM_ASSIGN_INTF(master_ports[0], tcdm_fc_data_addr_remapped)
-    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr) // BACCTODO this should be a cfi bus, can we change this for only one array entry?
+    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr) // BACCTODO this should be a cfi bus, can we change this for only one array entry? I guess no
     `TCDM_ASSIGN_INTF(master_ports[2], tcdm_udma_tx)
     `TCDM_ASSIGN_INTF(master_ports[3], tcdm_udma_rx)
     `TCDM_ASSIGN_INTF(master_ports[4], tcdm_debug)
@@ -166,7 +167,7 @@ module soc_interconnect_wrap
         `TCDM_ASSIGN_INTF(master_ports[`NR_SOC_TCDM_MASTER_PORTS + i], axi_bridge_2_interconnect[i])
     end
 
-    XBAR_TCDM_BUS contiguous_slaves[3]();
+    XBAR_TCDM_BUS_CFI contiguous_slaves[3](); //BACCTODO
     `TCDM_ASSIGN_INTF(l2_private_slaves[0], contiguous_slaves[0])
     `TCDM_ASSIGN_INTF(l2_private_slaves[1], contiguous_slaves[1])
     `TCDM_ASSIGN_INTF(boot_rom_slave, contiguous_slaves[2])

@@ -62,7 +62,7 @@ module soc_interconnect
      XBAR_TCDM_BUS.Master                                        interleaved_slaves[NR_SLAVE_PORTS_INTERLEAVED],
      //Contiguous Slave
      input addr_map_rule_t[NR_ADDR_RULES_SLAVE_PORTS_CONTIG-1:0] addr_space_contiguous,
-     XBAR_TCDM_BUS.Master                                        contiguous_slaves[NR_SLAVE_PORTS_CONTIG],
+     XBAR_TCDM_BUS_CFI.Master                                        contiguous_slaves[NR_SLAVE_PORTS_CONTIG], // BACCTODO
      //AXI Slave
      input addr_map_rule_t [NR_ADDR_RULES_AXI_SLAVE_PORTS-1:0]   addr_space_axi,
      AXI_BUS.Master                                              axi_slaves[NR_AXI_SLAVE_PORTS] //AXI_ID width must be

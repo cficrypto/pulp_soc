@@ -432,7 +432,8 @@ module pulp_soc import dm::*; #(
 
     APB_BUS s_apb_periph_bus ();
 
-    XBAR_TCDM_BUS s_mem_rom_bus ();
+    //BACCTODO 2x mem bus
+    XBAR_TCDM_BUS_CFI s_mem_rom_bus ();
 
     XBAR_TCDM_BUS  s_mem_l2_bus[NB_L2_BANKS-1:0]();
     XBAR_TCDM_BUS  s_mem_l2_pri_bus[NB_L2_BANKS_PRI-1:0]();
