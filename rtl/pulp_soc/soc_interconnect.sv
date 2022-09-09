@@ -20,6 +20,7 @@
 //-----------------------------------------------------------------------------
 `include "tcdm_macros.svh"
 `include "axi/assign.svh"
+`include "cfi_config.sv"
 
 module soc_interconnect
     import pkg_soc_interconnect::addr_map_rule_t;
@@ -54,15 +55,15 @@ module soc_interconnect
      input logic                                                 clk_i,
      input logic                                                 rst_ni,
      input logic                                                 test_en_i, // 0 Normal operation, 1 put sub-IPs into testmode (bypass clock gates)
-     XBAR_TCDM_BUS.Slave                                         master_ports[NR_MASTER_PORTS],
-     XBAR_TCDM_BUS.Slave                                         master_ports_interleaved_only[NR_MASTER_PORTS_INTERLEAVED_ONLY],
+     XBAR_TCDM_BUS_CFI.Slave                                     master_ports[NR_MASTER_PORTS],
+     XBAR_TCDM_BUS_CFI.Slave                                     master_ports_interleaved_only[NR_MASTER_PORTS_INTERLEAVED_ONLY],
      input addr_map_rule_t[NR_ADDR_RULES_L2_DEMUX-1:0]           addr_space_l2_demux,
      //Interleaved Slave
      input addr_map_rule_t[NR_ADDR_RULES_SLAVE_PORTS_INTLVD-1:0] addr_space_interleaved,
-     XBAR_TCDM_BUS.Master                                        interleaved_slaves[NR_SLAVE_PORTS_INTERLEAVED],
+     XBAR_TCDM_BUS_CFI.Master                                    interleaved_slaves[NR_SLAVE_PORTS_INTERLEAVED],
      //Contiguous Slave
      input addr_map_rule_t[NR_ADDR_RULES_SLAVE_PORTS_CONTIG-1:0] addr_space_contiguous,
-     XBAR_TCDM_BUS_CFI.Master                                        contiguous_slaves[NR_SLAVE_PORTS_CONTIG], // BACCTODO
+     XBAR_TCDM_BUS_CFI.Master                                    contiguous_slaves[NR_SLAVE_PORTS_CONTIG], // BACCTODO
      //AXI Slave
      input addr_map_rule_t [NR_ADDR_RULES_AXI_SLAVE_PORTS-1:0]   addr_space_axi,
      AXI_BUS.Master                                              axi_slaves[NR_AXI_SLAVE_PORTS] //AXI_ID width must be
@@ -76,9 +77,9 @@ module soc_interconnect
     localparam int unsigned BUS_ADDR_WIDTH = 32;
 
     // Internal Wiring Signals
-    XBAR_TCDM_BUS l2_demux_2_interleaved_xbar[NR_MASTER_PORTS]();
-    XBAR_TCDM_BUS l2_demux_2_contiguous_xbar[NR_MASTER_PORTS]();
-    XBAR_TCDM_BUS l2_demux_2_axi_bridge[NR_MASTER_PORTS]();
+    XBAR_TCDM_BUS_CFI l2_demux_2_interleaved_xbar[NR_MASTER_PORTS]();
+    XBAR_TCDM_BUS_CFI l2_demux_2_contiguous_xbar[NR_MASTER_PORTS]();
+    XBAR_TCDM_BUS_CFI l2_demux_2_axi_bridge[NR_MASTER_PORTS]();
 
     //////////////////////
     // L2 Demultiplexer //
@@ -90,7 +91,7 @@ module soc_interconnect
 
 
     for (genvar i = 0; i < NR_MASTER_PORTS; i++) begin : gen_l2_demux
-        XBAR_TCDM_BUS demux_slaves[3]();
+        XBAR_TCDM_BUS_CFI demux_slaves[3]();
 
         `TCDM_ASSIGN_INTF(l2_demux_2_axi_bridge[i], demux_slaves[0]);
         `TCDM_ASSIGN_INTF(l2_demux_2_contiguous_xbar[i], demux_slaves[1]);
@@ -116,7 +117,7 @@ module soc_interconnect
     // The following code checks, that no interleaved-only master is trying to access address space outside the //
     // interleaved memory region.                                                                               //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    XBAR_TCDM_BUS master_ports_interleaved_only_checked[NR_MASTER_PORTS_INTERLEAVED_ONLY]();
+    XBAR_TCDM_BUS_CFI master_ports_interleaved_only_checked[NR_MASTER_PORTS_INTERLEAVED_ONLY]();
     for (genvar i = 0; i < NR_MASTER_PORTS_INTERLEAVED_ONLY; i++) begin : gen_interleaved_only_err_checkers
         XBAR_TCDM_BUS err_demux_slaves[2]();
 
@@ -159,7 +160,7 @@ module soc_interconnect
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Concatenate the l2 demux master port array and the interleaved only port array
-    XBAR_TCDM_BUS interleaved_masters[NR_MASTER_PORTS+NR_MASTER_PORTS_INTERLEAVED_ONLY]();
+    XBAR_TCDM_BUS_CFI interleaved_masters[NR_MASTER_PORTS+NR_MASTER_PORTS_INTERLEAVED_ONLY]();
 
     //Synopsys 2019.3 has a bug; It doesn't handle expressions for array indices on the left-hand side of assignments.
     // E.g. assign a[param+i] = b[i] doesn't work, but assign a[i] = b[i-param] does.
@@ -181,6 +182,7 @@ module soc_interconnect
     end
 
     interleaved_crossbar #(
+                           .CFI_DATA_WIDTH(`CFI_INSTR_WIDTH_DEF),
                            .NR_MASTER_PORTS(NR_MASTER_PORTS+NR_MASTER_PORTS_INTERLEAVED_ONLY),
                            .NR_SLAVE_PORTS(NR_SLAVE_PORTS_INTERLEAVED)
                            ) i_interleaved_xbar(
@@ -206,6 +208,7 @@ module soc_interconnect
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     XBAR_TCDM_BUS error_slave();
     contiguous_crossbar #(
+                          .CFI_DATA_WIDTH(`CFI_INSTR_WIDTH_DEF),
                           .NR_MASTER_PORTS(NR_MASTER_PORTS),
                           .NR_SLAVE_PORTS(NR_SLAVE_PORTS_CONTIG),
                           .NR_ADDR_RULES(NR_ADDR_RULES_SLAVE_PORTS_CONTIG)
@@ -238,7 +241,7 @@ module soc_interconnect
     // converts one 32-bit TCDM port to one 32-bit AXI port.                                                      //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     AXI_BUS #(.AXI_ADDR_WIDTH(32),
-              .AXI_DATA_WIDTH(32),
+              .AXI_DATA_WIDTH(32), //BACCTODO can we simply use 40 bits here?
               .AXI_ID_WIDTH(AXI_MASTER_ID_WIDTH),
               .AXI_USER_WIDTH(AXI_USER_WIDTH)
               ) axi_bridge_2_axi_xbar[NR_MASTER_PORTS]();

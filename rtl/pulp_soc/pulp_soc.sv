@@ -435,17 +435,17 @@ module pulp_soc import dm::*; #(
     //BACCTODO 2x mem bus
     XBAR_TCDM_BUS_CFI s_mem_rom_bus ();
 
-    XBAR_TCDM_BUS  s_mem_l2_bus[NB_L2_BANKS-1:0]();
-    XBAR_TCDM_BUS  s_mem_l2_pri_bus[NB_L2_BANKS_PRI-1:0]();
+    XBAR_TCDM_BUS_CFI  s_mem_l2_bus[NB_L2_BANKS-1:0]();
+    XBAR_TCDM_BUS_CFI  s_mem_l2_pri_bus[NB_L2_BANKS_PRI-1:0]();
 
     XBAR_TCDM_BUS     s_lint_debug_bus();
     XBAR_TCDM_BUS     s_lint_pulp_jtag_bus();
     XBAR_TCDM_BUS     s_lint_riscv_jtag_bus();
     XBAR_TCDM_BUS     s_lint_udma_tx_bus ();
     XBAR_TCDM_BUS     s_lint_udma_rx_bus ();
-    XBAR_TCDM_BUS     s_lint_fc_data_bus ();
+    XBAR_TCDM_BUS_CFI s_lint_fc_data_bus ();
     XBAR_TCDM_BUS_CFI s_lint_fc_instr_bus (); //BACCTODO This is the instruction master interface -> has to be extended
-    XBAR_TCDM_BUS s_lint_hwpe_bus[NB_HWPE_PORTS-1:0]();
+    XBAR_TCDM_BUS_CFI s_lint_hwpe_bus[NB_HWPE_PORTS-1:0]();
 
     `ifdef REMAP_ADDRESS
         logic [3:0] base_addr_int;
@@ -711,12 +711,13 @@ module pulp_soc import dm::*; #(
 `endif
 
     fc_subsystem #(
-        .CORE_TYPE  ( CORE_TYPE          ),
-        .USE_FPU    ( USE_FPU            ),
-        .CORE_ID    ( FC_CORE_CORE_ID    ),
-        .CLUSTER_ID ( FC_CORE_CLUSTER_ID ),
-        .USE_HWPE   ( USE_HWPE           ),
-        .USE_ZFINX  ( USE_ZFINX          )
+        .CFI_INSTR_WIDTH (`CFI_INSTR_WIDTH_DEF ),
+        .CORE_TYPE       ( CORE_TYPE           ),
+        .USE_FPU         ( USE_FPU             ),
+        .CORE_ID         ( FC_CORE_CORE_ID     ),
+        .CLUSTER_ID      ( FC_CORE_CLUSTER_ID  ),
+        .USE_HWPE        ( USE_HWPE            ),
+        .USE_ZFINX       ( USE_ZFINX           )
     ) fc_subsystem_i (
         .clk_i               ( s_soc_clk           ),
         .rst_ni              ( s_soc_rstn          ),

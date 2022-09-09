@@ -45,17 +45,17 @@ module soc_interconnect_wrap
        input logic clk_i,
        input logic rst_ni,
        input logic test_en_i,
-       XBAR_TCDM_BUS.Slave      tcdm_fc_data, //Data Port of the Fabric Controller
+       XBAR_TCDM_BUS_CFI.Slave      tcdm_fc_data, //Data Port of the Fabric Controller
        XBAR_TCDM_BUS_CFI.Slave      tcdm_fc_instr, //Instruction Port of the Fabric Controller //BACCTODO
-       XBAR_TCDM_BUS.Slave      tcdm_udma_tx, //TX Channel for the uDMA
-       XBAR_TCDM_BUS.Slave      tcdm_udma_rx, //RX Channel for the uDMA
-       XBAR_TCDM_BUS.Slave      tcdm_debug, //Debug access port from either the legacy or the riscv-debug unit
-       XBAR_TCDM_BUS.Slave      tcdm_hwpe[NR_HWPE_PORTS], //Hardware Processing Element ports
+       XBAR_TCDM_BUS.Slave      tcdm_udma_tx, //TX Channel for the uDMA //BACCTODO add converter
+       XBAR_TCDM_BUS.Slave      tcdm_udma_rx, //RX Channel for the uDMA //BACCTODO add converter
+       XBAR_TCDM_BUS.Slave      tcdm_debug, //Debug access port from either the legacy or the riscv-debug unit //BACCTODO add converter
+       XBAR_TCDM_BUS_CFI.Slave      tcdm_hwpe[NR_HWPE_PORTS], //Hardware Processing Element ports
        AXI_BUS.Slave            axi_master_plug, // Normaly used for cluster -> SoC communication
        AXI_BUS.Master           axi_slave_plug, // Normaly used for SoC -> cluster communication
        APB_BUS.Master           apb_peripheral_bus, // Connects to all the SoC Peripherals
-       XBAR_TCDM_BUS.Master     l2_interleaved_slaves[NR_L2_PORTS], // Connects to the interleaved memory banks
-       XBAR_TCDM_BUS.Master     l2_private_slaves[2], // Connects to core-private memory banks
+       XBAR_TCDM_BUS_CFI.Master     l2_interleaved_slaves[NR_L2_PORTS], // Connects to the interleaved memory banks
+       XBAR_TCDM_BUS_CFI.Master     l2_private_slaves[2], // Connects to core-private memory banks
        XBAR_TCDM_BUS_CFI.Master     boot_rom_slave //Connects to the bootrom //BACCTODO
      );
 
@@ -67,7 +67,7 @@ module soc_interconnect_wrap
     //////////////////////////////////////////////////////////////
     // 64-bit AXI to TCDM Bridge (Cluster to SoC communication) //
     //////////////////////////////////////////////////////////////
-    // BACCTODO should this use the wider bus? _CFI
+    // BACCTODO should this use the wider bus? _CFI --> converter?
     XBAR_TCDM_BUS axi_bridge_2_interconnect[pkg_soc_interconnect::NR_CLUSTER_2_SOC_TCDM_MASTER_PORTS](); //We need 4
                                                                                                          //32-bit TCDM
                                                                                                          //ports to

@@ -9,6 +9,7 @@
 // specific language governing permissions and limitations under the License.
 
 `include "soc_mem_map.svh"
+`include "cfi_config.sv"
 
 module l2_ram_multi_bank #(
    parameter NB_BANKS                   = 4
@@ -17,9 +18,10 @@ module l2_ram_multi_bank #(
    input logic             rst_ni,
    input logic             init_ni,
    input logic             test_mode_i,
-   XBAR_TCDM_BUS.Slave     mem_slave[NB_BANKS],
-   XBAR_TCDM_BUS.Slave     mem_pri_slave[2]
+   XBAR_TCDM_BUS_CFI.Slave mem_slave[NB_BANKS],
+   XBAR_TCDM_BUS_CFI.Slave mem_pri_slave[2]
 );
+    // BACCTODO change sram banksizes
     // Don't forget to adjust the SRAM macros and the FPGA settings if you change the banksizes
     localparam int unsigned BANK_SIZE_INTL_SRAM  = 32768; //Number of 32-bit words
     localparam int unsigned BANK_SIZE_PRI0       = 8192; //Number of 32-bit words
@@ -53,7 +55,7 @@ module l2_ram_multi_bank #(
       `ifndef PULP_FPGA_EMUL
           generic_memory #(
             .ADDR_WIDTH ( INTL_MEM_ADDR_WIDTH ),
-            .DATA_WIDTH ( 32                  )
+            .DATA_WIDTH (`CFI_INSTR_WIDTH_DEF )
             ) bank_i (
             .CLK   ( clk_i                                             ),
             .INITN ( 1'b1                                              ),
@@ -67,6 +69,7 @@ module l2_ram_multi_bank #(
             );
 
       `else // !`ifndef PULP_FPGA_EMUL
+            // BACCTODO do we have to change the datawidth here too, or only in fpga settings?
           fpga_interleaved_ram #(.ADDR_WIDTH(INTL_MEM_ADDR_WIDTH)) bank_i
               (
                .clk_i,

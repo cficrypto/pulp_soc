@@ -9,10 +9,9 @@
 // specific language governing permissions and limitations under the License.
 
 `include "pulp_soc_defines.sv"
-`include "cfi_config.sv" //BACCTODO
 
 module fc_subsystem #(
-    parameter CFI_INSTR_WIDTH     = `CFI_INSTR_WIDTH_DEF, //BACCTODO
+    parameter CFI_INSTR_WIDTH     = 32, //BACCTODO
     parameter CORE_TYPE           = 0,
     parameter USE_FPU             = 1,
     parameter USE_HWPE            = 1,
@@ -31,9 +30,9 @@ module fc_subsystem #(
     input  logic                      rst_ni,
     input  logic                      test_en_i,
 
-    XBAR_TCDM_BUS.Master              l2_data_master,
+    XBAR_TCDM_BUS_CFI.Master          l2_data_master,
     XBAR_TCDM_BUS_CFI.Master          l2_instr_master, //BACCTODO
-    XBAR_TCDM_BUS.Master              l2_hwpe_master [NB_HWPE_PORTS-1:0],
+    XBAR_TCDM_BUS_CFI.Master          l2_hwpe_master [NB_HWPE_PORTS-1:0],
     APB_BUS.Slave                     apb_slave_eu,
     APB_BUS.Slave                     apb_slave_hwpe,
 
