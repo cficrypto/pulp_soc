@@ -50,7 +50,7 @@ module soc_interconnect_wrap
        XBAR_TCDM_BUS.Slave      tcdm_udma_tx, //TX Channel for the uDMA //BACCTODO add converter
        XBAR_TCDM_BUS.Slave      tcdm_udma_rx, //RX Channel for the uDMA //BACCTODO add converter
        XBAR_TCDM_BUS.Slave      tcdm_debug, //Debug access port from either the legacy or the riscv-debug unit //BACCTODO add converter
-       XBAR_TCDM_BUS_CFI.Slave      tcdm_hwpe[NR_HWPE_PORTS], //Hardware Processing Element ports
+       XBAR_TCDM_BUS_CFI.Slave      tcdm_hwpe[NR_HWPE_PORTS], //Hardware Processing Element ports //BACCTODO do we need this?
        AXI_BUS.Slave            axi_master_plug, // Normaly used for cluster -> SoC communication
        AXI_BUS.Master           axi_slave_plug, // Normaly used for SoC -> cluster communication
        APB_BUS.Master           apb_peripheral_bus, // Connects to all the SoC Peripherals
@@ -67,7 +67,7 @@ module soc_interconnect_wrap
     //////////////////////////////////////////////////////////////
     // 64-bit AXI to TCDM Bridge (Cluster to SoC communication) //
     //////////////////////////////////////////////////////////////
-    // BACCTODO should this use the wider bus? _CFI --> converter?
+    // BACCTODO we don't use axi --> converter
     XBAR_TCDM_BUS axi_bridge_2_interconnect[pkg_soc_interconnect::NR_CLUSTER_2_SOC_TCDM_MASTER_PORTS](); //We need 4
                                                                                                          //32-bit TCDM
                                                                                                          //ports to
@@ -152,10 +152,10 @@ module soc_interconnect_wrap
 
     //Assign Master Ports to array
     `TCDM_ASSIGN_INTF(master_ports[0], tcdm_fc_data_addr_remapped)
-    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr) // BACCTODO this should be a cfi bus, can we change this for only one array entry? I guess no
-    `TCDM_ASSIGN_INTF(master_ports[2], tcdm_udma_tx)
-    `TCDM_ASSIGN_INTF(master_ports[3], tcdm_udma_rx)
-    `TCDM_ASSIGN_INTF(master_ports[4], tcdm_debug)
+    `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr)
+    `TCDM_ASSIGN_INTF(master_ports[2], tcdm_udma_tx) //BACCTODO add converter here
+    `TCDM_ASSIGN_INTF(master_ports[3], tcdm_udma_rx) //BACCTODO add converter here
+    `TCDM_ASSIGN_INTF(master_ports[4], tcdm_debug) //BACCTODO add converter here or do we need this?
 
     //Assign the 4 master ports from the AXI plug to the interface array
 
@@ -165,6 +165,7 @@ module soc_interconnect_wrap
     `define NR_SOC_TCDM_MASTER_PORTS 5
     for (genvar i = 0; i < 4; i++) begin
         `TCDM_ASSIGN_INTF(master_ports[`NR_SOC_TCDM_MASTER_PORTS + i], axi_bridge_2_interconnect[i])
+        //BACCTODO add converter instead
     end
 
     XBAR_TCDM_BUS_CFI contiguous_slaves[3](); //BACCTODO
@@ -203,7 +204,7 @@ module soc_interconnect_wrap
                                              .rst_ni,
                                              .test_en_i,
                                              .master_ports(master_ports),
-                                             .master_ports_interleaved_only(tcdm_hwpe),
+                                             .master_ports_interleaved_only(tcdm_hwpe), // BACCTODO what does this mean? there is also an interleaced only signal...
                                              .addr_space_l2_demux(L2_DEMUX_RULES),
                                              .addr_space_interleaved(INTERLEAVED_ADDR_SPACE),
                                              .interleaved_slaves(l2_interleaved_slaves),

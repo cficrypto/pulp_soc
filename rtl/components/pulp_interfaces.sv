@@ -55,7 +55,7 @@ endinterface // XBAR_TCDM_BUS_64
 // BACCTODO do we need converter to the 32 Bit BUS?
 
 interface XBAR_TCDM_BUS_CFI #(
-   parameter CFI_INSTR_WIDTH = 40
+   parameter CFI_INSTR_WIDTH = `CFI_INSTR_WIDTH_DEF
 );
 
    // REQUEST CHANNEL

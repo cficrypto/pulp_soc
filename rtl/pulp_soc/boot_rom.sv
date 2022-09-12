@@ -13,7 +13,7 @@
 
 module boot_rom #(
     parameter ROM_ADDR_WIDTH = 13,
-    parameter ROM_DATA_WIDTH = 40 // BACCTODO I added this parameter and changed the bus
+    parameter ROM_DATA_WIDTH = 32
     )
     (
      input logic             clk_i,

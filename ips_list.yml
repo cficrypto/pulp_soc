@@ -72,9 +72,7 @@ jtag_pulp:
   commit: v0.1
   domain: [soc]
 riscv:
-#  commit: pulpissimo-v3.4.0-rev3
   commit: cfi
-#  server: https://gitlab.ecs.tuwien.ac.at
   server: git@gitlab.ecs.tuwien.ac.at
   group:  riscv_cfi_crypto
   domain: [cluster, soc]
