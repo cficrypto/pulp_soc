@@ -444,8 +444,8 @@ module pulp_soc import dm::*; #(
     XBAR_TCDM_BUS     s_lint_udma_tx_bus ();
     XBAR_TCDM_BUS     s_lint_udma_rx_bus ();
     XBAR_TCDM_BUS_CFI s_lint_fc_data_bus ();
-    XBAR_TCDM_BUS_CFI s_lint_fc_instr_bus (); //BACCTODO This is the instruction master interface -> has to be extended
-    XBAR_TCDM_BUS_CFI s_lint_hwpe_bus[NB_HWPE_PORTS-1:0]();
+    XBAR_TCDM_BUS_CFI s_lint_fc_instr_bus ();
+    XBAR_TCDM_BUS_CFI s_lint_hwpe_bus[NB_HWPE_PORTS-1:0](); //BACCTODO is this necessary?
 
     `ifdef REMAP_ADDRESS
         logic [3:0] base_addr_int;
@@ -524,7 +524,8 @@ module pulp_soc import dm::*; #(
     //********************************************************
 
     boot_rom #(
-        .ROM_ADDR_WIDTH(ROM_ADDR_WIDTH)
+        .ROM_DATA_WIDTH(`CFI_INSTR_WIDTH_DEF),
+        .ROM_ADDR_WIDTH( ROM_ADDR_WIDTH     )
     ) boot_rom_i (
         .clk_i       ( s_soc_clk       ),
         .rst_ni      ( s_soc_rstn      ),

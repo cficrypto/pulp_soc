@@ -71,7 +71,7 @@ module soc_interconnect
      );
 
 
-    // Internal Parameters
+    // Internal Parameters for AXI only
     // Do **NOT** change
     localparam int unsigned BUS_DATA_WIDTH = 32;
     localparam int unsigned BUS_ADDR_WIDTH = 32;
@@ -79,7 +79,7 @@ module soc_interconnect
     // Internal Wiring Signals
     XBAR_TCDM_BUS_CFI l2_demux_2_interleaved_xbar[NR_MASTER_PORTS]();
     XBAR_TCDM_BUS_CFI l2_demux_2_contiguous_xbar[NR_MASTER_PORTS]();
-    XBAR_TCDM_BUS_CFI l2_demux_2_axi_bridge[NR_MASTER_PORTS]();
+    XBAR_TCDM_BUS     l2_demux_2_axi_bridge[NR_MASTER_PORTS]();
 
     //////////////////////
     // L2 Demultiplexer //
@@ -119,7 +119,7 @@ module soc_interconnect
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     XBAR_TCDM_BUS_CFI master_ports_interleaved_only_checked[NR_MASTER_PORTS_INTERLEAVED_ONLY]();
     for (genvar i = 0; i < NR_MASTER_PORTS_INTERLEAVED_ONLY; i++) begin : gen_interleaved_only_err_checkers
-        XBAR_TCDM_BUS err_demux_slaves[2]();
+        XBAR_TCDM_BUS_CFI err_demux_slaves[2](); //BACCTODO extend error slaves
 
         `TCDM_ASSIGN_INTF(master_ports_interleaved_only_checked[i], err_demux_slaves[1]);
 
@@ -137,7 +137,7 @@ module soc_interconnect
                                   .slave_ports    ( err_demux_slaves                 )
                                   );
         tcdm_error_slave #(
-          .ERROR_RESPONSE(32'hBADACCE5)
+          .ERROR_RESPONSE(`CFI_INSTR_WIDTH_DEF'hBADACCE5)
         ) i_error_slave_interleaved (
           .clk_i,
           .rst_ni,
@@ -166,16 +166,16 @@ module soc_interconnect
     // E.g. assign a[param+i] = b[i] doesn't work, but assign a[i] = b[i-param] does.
     // This is a verbose workaround for it. The next couple of ugly macro magic unpacks each interface into individual
     // signal arrays, performs the assignments to the interface and packs the signal back to an array of interfaces.
-    `TCDM_EXPLODE_ARRAY_DECLARE(interleaved_masters, NR_MASTER_PORTS+NR_MASTER_PORTS_INTERLEAVED_ONLY)
+    `TCDM_CFI_EXPLODE_ARRAY_DECLARE(interleaved_masters, NR_MASTER_PORTS+NR_MASTER_PORTS_INTERLEAVED_ONLY)
     for (genvar i = 0; i < NR_MASTER_PORTS + NR_MASTER_PORTS_INTERLEAVED_ONLY; i++) begin
         `TCDM_SLAVE_EXPLODE(interleaved_masters[i], interleaved_masters, [i])
     end
-    `TCDM_EXPLODE_ARRAY_DECLARE(l2_demux_2_interleaved_xbar, NR_MASTER_PORTS)
+    `TCDM_CFI_EXPLODE_ARRAY_DECLARE(l2_demux_2_interleaved_xbar, NR_MASTER_PORTS)
     for (genvar i = 0; i < NR_MASTER_PORTS; i++) begin
         `TCDM_MASTER_EXPLODE(l2_demux_2_interleaved_xbar[i], l2_demux_2_interleaved_xbar, [i])
         `TCDM_ASSIGN(interleaved_masters, [i], l2_demux_2_interleaved_xbar, [i])
         end
-    `TCDM_EXPLODE_ARRAY_DECLARE(master_ports_interleaved_only_checked, NR_MASTER_PORTS_INTERLEAVED_ONLY)
+    `TCDM_CFI_EXPLODE_ARRAY_DECLARE(master_ports_interleaved_only_checked, NR_MASTER_PORTS_INTERLEAVED_ONLY)
     for (genvar i = 0; i < NR_MASTER_PORTS_INTERLEAVED_ONLY; i++) begin
         `TCDM_MASTER_EXPLODE(master_ports_interleaved_only_checked[i], master_ports_interleaved_only_checked, [i])
         `TCDM_ASSIGN(interleaved_masters, [NR_MASTER_PORTS + i], master_ports_interleaved_only_checked, [i])
@@ -206,7 +206,7 @@ module soc_interconnect
     // within a single cycle must appropriately delay the assertion of the gnt (grant) signal. Asserting grant        //
     // without asserting r_valid in the next cycle results in undefined behavior.                                     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    XBAR_TCDM_BUS error_slave();
+    XBAR_TCDM_BUS_CFI error_slave(); //BACCTODO extend error slaves
     contiguous_crossbar #(
                           .CFI_DATA_WIDTH(`CFI_INSTR_WIDTH_DEF),
                           .NR_MASTER_PORTS(NR_MASTER_PORTS),
@@ -226,7 +226,7 @@ module soc_interconnect
     //Error Slave
     // This dummy slave is responsible to generate the buserror described above
     tcdm_error_slave #(
-      .ERROR_RESPONSE(32'hBADACCE5)
+      .ERROR_RESPONSE(`CFI_INSTR_WIDTH_DEF'hBADACCE5)
     ) i_error_slave_contig_xbar (
       .clk_i,
       .rst_ni,
@@ -241,7 +241,7 @@ module soc_interconnect
     // converts one 32-bit TCDM port to one 32-bit AXI port.                                                      //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     AXI_BUS #(.AXI_ADDR_WIDTH(32),
-              .AXI_DATA_WIDTH(32), //BACCTODO can we simply use 40 bits here?
+              .AXI_DATA_WIDTH(32), //BACCTODO can we simply use 40 bits here? --> we don't use axi
               .AXI_ID_WIDTH(AXI_MASTER_ID_WIDTH),
               .AXI_USER_WIDTH(AXI_USER_WIDTH)
               ) axi_bridge_2_axi_xbar[NR_MASTER_PORTS]();

@@ -21,12 +21,14 @@
 // specific language governing permissions and limitations under the License.
 //-----------------------------------------------------------------------------
 
+`include "cfi_config.sv"
+
 module tcdm_error_slave #(
-  parameter logic [31:0] ERROR_RESPONSE = 32'hBADACCE5
+  parameter logic [`CFI_INSTR_WIDTH_DEF-1:0] ERROR_RESPONSE = `CFI_INSTR_WIDTH_DEF'hBADACCE5
 ) (
-  input logic          clk_i,
-  input logic          rst_ni,
-  XBAR_TCDM_BUS.Slave  slave
+  input logic             clk_i,
+  input logic             rst_ni,
+  XBAR_TCDM_BUS_CFI.Slave slave
 );
 
     logic         error_valid_d, error_valid_q;

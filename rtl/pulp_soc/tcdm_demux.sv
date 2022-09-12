@@ -33,16 +33,16 @@ module tcdm_demux
      input logic                                  rst_ni,
      input logic                                  test_en_i,
      input addr_map_rule_t[NR_ADDR_MAP_RULES-1:0] addr_map_rules,
-     XBAR_TCDM_BUS.Slave                          master_port,
-     XBAR_TCDM_BUS.Master                         slave_ports[NR_OUTPUTS]
+     XBAR_TCDM_BUS_CFI.Slave                      master_port,
+     XBAR_TCDM_BUS_CFI.Master                     slave_ports[NR_OUTPUTS]
      );
     // Do **not** change. The TCDM interface uses hardcoded bus widths so we cannot just change them here.
     localparam int unsigned BE_WIDTH = 2;
     localparam int unsigned ADDR_WIDTH = 32;
-    localparam int unsigned DATA_WIDTH = 32;
+    localparam int unsigned DATA_WIDTH = 32; // unused
 
     // Explode the output interfaces to  individual signals
-    `TCDM_EXPLODE_ARRAY_DECLARE(slave_ports, NR_OUTPUTS)
+    `TCDM_CFI_EXPLODE_ARRAY_DECLARE(slave_ports, NR_OUTPUTS)
     for (genvar i = 0; i < NR_OUTPUTS; i++) begin
         `TCDM_SLAVE_EXPLODE(slave_ports[i], slave_ports, [i])
     end

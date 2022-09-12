@@ -26,7 +26,7 @@
 module contiguous_crossbar
     import pkg_soc_interconnect::addr_map_rule_t;
     #(
-      parameter int unsigned CFI_DATA_WIDTH, // BACCTODO 
+      parameter int unsigned CFI_DATA_WIDTH,
       parameter int unsigned NR_MASTER_PORTS,
       parameter int unsigned NR_SLAVE_PORTS,
       parameter int unsigned NR_ADDR_RULES
@@ -36,7 +36,7 @@ module contiguous_crossbar
       input logic                               test_en_i,
       XBAR_TCDM_BUS_CFI.Slave                   master_ports[NR_MASTER_PORTS],
       XBAR_TCDM_BUS_CFI.Master                  slave_ports[NR_SLAVE_PORTS],
-      XBAR_TCDM_BUS.Master                      error_port, // BACCTODO errorport_cfi missing
+      XBAR_TCDM_BUS_CFI.Master                  error_port,
       input addr_map_rule_t [NR_ADDR_RULES-1:0] addr_rules
     );
     // Do **not** change. The TCDM interface uses hardcoded bus widths so we cannot just change them here.

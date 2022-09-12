@@ -294,22 +294,29 @@ module fc_subsystem #(
     );
 
 
-    generate
-    if(USE_HWPE) begin : fc_hwpe_gen
-        fc_hwpe #(
-            .N_MASTER_PORT ( NB_HWPE_PORTS ),
-            .ID_WIDTH      ( 2             )
-        ) i_fc_hwpe (
-            .clk_i             ( clk_i          ),
-            .rst_ni            ( rst_ni         ),
-            .test_mode_i       ( test_en_i      ),
-            .hwacc_xbar_master ( l2_hwpe_master ),
-            .hwacc_cfg_slave   ( apb_slave_hwpe ),
-            .evt_o             ( hwpe_events_o  ),
-            .busy_o            (                )
-        );
-    end
-    else begin : no_fc_hwpe_gen
+    // BACCTODO include this again and introduce a converter
+//    generate
+//    if(USE_HWPE) begin : fc_hwpe_gen
+//
+//        XBAR_TCDM_BUS l2_hwpe_master_32 [NB_HWPE_PORTS-1:0] ();
+//        tcdm_converter_cfi_to_32 i_tcdm_convert_hwpe(
+//            .master_cfi (l2_hwpe_master),
+//            .slave_cfi  (l2_hwpe_master_32)
+//        );
+//
+//        fc_hwpe #(
+//            .N_MASTER_PORT ( NB_HWPE_PORTS ),
+//            .ID_WIDTH      ( 2             )
+//        ) i_fc_hwpe (
+//            .clk_i             ( clk_i             ),
+//            .rst_ni            ( rst_ni            ),
+//            .test_mode_i       ( test_en_i         ),
+//            .hwacc_xbar_master ( l2_hwpe_master    ),
+//            .hwacc_cfg_slave   ( apb_slave_hwpe    ),
+//            .evt_o             ( hwpe_events_o     ),
+//            .busy_o            (                   )
+//        );
+//    end else begin : no_fc_hwpe_gen
         assign hwpe_events_o = '0;
         assign apb_slave_hwpe.prdata  = '0;
         assign apb_slave_hwpe.pready  = '0;
@@ -321,7 +328,7 @@ module fc_subsystem #(
             assign l2_hwpe_master[ii].be    = '0;
             assign l2_hwpe_master[ii].add   = '0;
         end
-    end
-    endgenerate
+//    end
+//    endgenerate
 
 endmodule
