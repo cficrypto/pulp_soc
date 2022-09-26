@@ -713,6 +713,7 @@ module pulp_soc import dm::*; #(
 
     fc_subsystem #(
         .CFI_INSTR_WIDTH (`CFI_INSTR_WIDTH_DEF ),
+        .CFI_CAPACITY    (`CFI_CAPACITY_DEF    ),
         .CORE_TYPE       ( CORE_TYPE           ),
         .USE_FPU         ( USE_FPU             ),
         .CORE_ID         ( FC_CORE_CORE_ID     ),

@@ -11,7 +11,8 @@
 `include "pulp_soc_defines.sv"
 
 module fc_subsystem #(
-    parameter CFI_INSTR_WIDTH     = 32, //BACCTODO
+    parameter CFI_INSTR_WIDTH     = 32, //BACCTODO 
+    parameter CFI_CAPACITY        = 160, //BACCTODO 
     parameter CORE_TYPE           = 0,
     parameter USE_FPU             = 1,
     parameter USE_HWPE            = 1,
@@ -126,6 +127,7 @@ module fc_subsystem #(
     assign boot_addr = boot_addr_i;
     riscv_core #(
         .INSTR_RDATA_WIDTH   ( CFI_INSTR_WIDTH     ), // BACCTODO
+        .CFI_CAPACITY        ( CFI_CAPACITY        ), // BACCTODO
         .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
         .PULP_SECURE         ( 1                   ),
         .PULP_CLUSTER        ( 0                   ),
