@@ -1,3 +1,8 @@
+/**
+* properly map data from the extended CFI bus width to a 32 bit bus
+* NOT IN USE! Instead Macros in tcdm_macros.sv are used
+*/
+
 module tcdm_converter_CFI_to_32 (
     XBAR_TCDM_BUS_CFI   master_cfi,
     XBAR_TCDM_BUS       slave_32

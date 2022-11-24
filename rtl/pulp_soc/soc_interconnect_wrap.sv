@@ -153,9 +153,9 @@ module soc_interconnect_wrap
     //Assign Master Ports to array
     `TCDM_ASSIGN_INTF(master_ports[0], tcdm_fc_data_addr_remapped)
     `TCDM_ASSIGN_INTF(master_ports[1], tcdm_fc_instr)
-    `TCDM_ASSIGN_INTF(master_ports[2], tcdm_udma_tx) //BACCTODO add converter here
-    `TCDM_ASSIGN_INTF(master_ports[3], tcdm_udma_rx) //BACCTODO add converter here
-    `TCDM_ASSIGN_INTF(master_ports[4], tcdm_debug) //BACCTODO add converter here or do we need this?
+    `TCDM_ASSIGN_INTF_CFI_32(master_ports[2], tcdm_udma_tx) //BACCTODO add converter here
+    `TCDM_ASSIGN_INTF_CFI_32(master_ports[3], tcdm_udma_rx) //BACCTODO add converter here
+    `TCDM_ASSIGN_INTF_CFI_32(master_ports[4], tcdm_debug) //BACCTODO add converter here or do we need this?
 
     //Assign the 4 master ports from the AXI plug to the interface array
 
@@ -164,7 +164,7 @@ module soc_interconnect_wrap
     // E.g. assign a[param+i] = b[i] doesn't work, but assign a[i] = b[i-param] does.
     `define NR_SOC_TCDM_MASTER_PORTS 5
     for (genvar i = 0; i < 4; i++) begin
-        `TCDM_ASSIGN_INTF(master_ports[`NR_SOC_TCDM_MASTER_PORTS + i], axi_bridge_2_interconnect[i])
+        `TCDM_ASSIGN_INTF_CFI_32(master_ports[`NR_SOC_TCDM_MASTER_PORTS + i], axi_bridge_2_interconnect[i])
         //BACCTODO add converter instead
     end
 

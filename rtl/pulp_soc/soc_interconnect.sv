@@ -93,7 +93,7 @@ module soc_interconnect
     for (genvar i = 0; i < NR_MASTER_PORTS; i++) begin : gen_l2_demux
         XBAR_TCDM_BUS_CFI demux_slaves[3]();
 
-        `TCDM_ASSIGN_INTF(l2_demux_2_axi_bridge[i], demux_slaves[0]);
+        `TCDM_ASSIGN_INTF_32_CFI(l2_demux_2_axi_bridge[i], demux_slaves[0]);
         `TCDM_ASSIGN_INTF(l2_demux_2_contiguous_xbar[i], demux_slaves[1]);
         `TCDM_ASSIGN_INTF(l2_demux_2_interleaved_xbar[i], demux_slaves[2]);
 

@@ -72,7 +72,7 @@ jtag_pulp:
   commit: v0.1
   domain: [soc]
 riscv:
-  commit: 8ab98df09ffd8b1a208ed217989fb1941f0e5c00
+  commit: e06865858175f1fe38e705fb1d0d35f3c1077e71
   server: git@gitlab.ecs.tuwien.ac.at
   group:  riscv_cfi_crypto
   domain: [cluster, soc]
