@@ -27,7 +27,7 @@
 
 module interleaved_crossbar
     #(
-      parameter int unsigned CFI_DATA_WIDTH, // BACCTODO 
+      parameter int unsigned CFI_DATA_WIDTH,
       parameter int unsigned NR_MASTER_PORTS,
       parameter int unsigned NR_SLAVE_PORTS //Must be a power of two
       )(
@@ -38,7 +38,8 @@ module interleaved_crossbar
         XBAR_TCDM_BUS_CFI.Master slave_ports[NR_SLAVE_PORTS]
         );
     // Do **not** change. The TCDM interface uses hardcoded bus widths so we cannot just change them here.
-    localparam int unsigned BE_WIDTH = 4;
+    // BACCTODO Byteenable is constant here
+    localparam int unsigned BE_WIDTH = 5;
     localparam int unsigned ADDR_WIDTH = 32;
     localparam int unsigned DATA_WIDTH = CFI_DATA_WIDTH;
     localparam int unsigned PORT_SEL_WIDTH = $clog2(NR_SLAVE_PORTS);

@@ -9,6 +9,7 @@
 // specific language governing permissions and limitations under the License.
 
 
+`include "tcdm_macros.svh"
 `include "pulp_soc_defines.sv"
 
 module pulp_soc import dm::*; #(
@@ -432,12 +433,12 @@ module pulp_soc import dm::*; #(
 
     APB_BUS s_apb_periph_bus ();
 
-    //BACCTODO 2x mem bus
     XBAR_TCDM_BUS_CFI s_mem_rom_bus ();
 
     XBAR_TCDM_BUS_CFI  s_mem_l2_bus[NB_L2_BANKS-1:0]();
     XBAR_TCDM_BUS_CFI  s_mem_l2_pri_bus[NB_L2_BANKS_PRI-1:0]();
 
+    XBAR_TCDM_BUS_CFI s_lint_debug_bus_cfi();
     XBAR_TCDM_BUS     s_lint_debug_bus();
     XBAR_TCDM_BUS     s_lint_pulp_jtag_bus();
     XBAR_TCDM_BUS     s_lint_riscv_jtag_bus();
@@ -445,7 +446,7 @@ module pulp_soc import dm::*; #(
     XBAR_TCDM_BUS     s_lint_udma_rx_bus ();
     XBAR_TCDM_BUS_CFI s_lint_fc_data_bus ();
     XBAR_TCDM_BUS_CFI s_lint_fc_instr_bus ();
-    XBAR_TCDM_BUS_CFI s_lint_hwpe_bus[NB_HWPE_PORTS-1:0](); //BACCTODO is this necessary?
+    XBAR_TCDM_BUS_CFI s_lint_hwpe_bus[NB_HWPE_PORTS-1:0]();
 
     `ifdef REMAP_ADDRESS
         logic [3:0] base_addr_int;
@@ -800,7 +801,7 @@ module pulp_soc import dm::*; #(
         .tcdm_fc_instr         ( s_lint_fc_instr_bus ),
         .tcdm_udma_rx          ( s_lint_udma_rx_bus  ),
         .tcdm_udma_tx          ( s_lint_udma_tx_bus  ),
-        .tcdm_debug            ( s_lint_debug_bus    ),
+        .tcdm_debug            ( s_lint_debug_bus_cfi),
         .tcdm_hwpe             ( s_lint_hwpe_bus     ),
         .axi_master_plug       ( s_data_in_bus       ),
         .axi_slave_plug        ( s_data_out_bus      ),
@@ -932,6 +933,7 @@ module pulp_soc import dm::*; #(
         .tcdm_bus_0_i(s_lint_pulp_jtag_bus),
         .tcdm_bus_o(s_lint_debug_bus)
     );
+    `TCDM_ASSIGN_INTF_CFI_32(s_lint_debug_bus_cfi, s_lint_debug_bus)
 
     apb2per #(
         .PER_ADDR_WIDTH ( 32  ),

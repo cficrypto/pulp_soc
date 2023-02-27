@@ -69,7 +69,7 @@ module l2_ram_multi_bank #(
             );
 
       `else // !`ifndef PULP_FPGA_EMUL
-            // BACCTODO do we have to change the datawidth here too, or only in fpga settings?
+            // BACCTODO do we have to change the memory here too, or only in fpga settings? (same for private banks)
           fpga_interleaved_ram #(.ADDR_WIDTH(INTL_MEM_ADDR_WIDTH)) bank_i
               (
                .clk_i,
@@ -102,7 +102,7 @@ module l2_ram_multi_bank #(
    `ifndef PULP_FPGA_EMUL
     generic_memory #(
       .ADDR_WIDTH ( PRI0_MEM_ADDR_WIDTH  ),
-      .DATA_WIDTH ( 32                  )
+      .DATA_WIDTH (`CFI_INSTR_WIDTH_DEF  )
    ) bank_sram_pri0_i (
       .CLK   ( clk_i                                 ),
       .INITN ( 1'b1                                  ),
@@ -145,7 +145,7 @@ module l2_ram_multi_bank #(
    `ifndef PULP_FPGA_EMUL
     generic_memory #(
       .ADDR_WIDTH ( PRI1_MEM_ADDR_WIDTH  ),
-      .DATA_WIDTH ( 32                  )
+      .DATA_WIDTH (`CFI_INSTR_WIDTH_DEF  )
    ) bank_sram_pri1_i (
       .CLK   ( clk_i                                 ),
       .INITN ( 1'b1                                  ),

@@ -40,7 +40,8 @@ module contiguous_crossbar
       input addr_map_rule_t [NR_ADDR_RULES-1:0] addr_rules
     );
     // Do **not** change. The TCDM interface uses hardcoded bus widths so we cannot just change them here.
-    localparam int unsigned BE_WIDTH = 4;
+    // BACCTODO Byteenable is constant here
+    localparam int unsigned BE_WIDTH = 5;
     localparam int unsigned ADDR_WIDTH = 32;
     localparam int unsigned DATA_WIDTH = CFI_DATA_WIDTH;
     localparam int unsigned NR_SLAVE_PORTS_INTERNAL = NR_SLAVE_PORTS+1; // We have one additional slave port for the

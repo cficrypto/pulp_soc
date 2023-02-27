@@ -11,8 +11,8 @@
 `include "pulp_soc_defines.sv"
 
 module fc_subsystem #(
-    parameter CFI_INSTR_WIDTH     = 32, //BACCTODO 
-    parameter CFI_CAPACITY        = 160, //BACCTODO 
+    parameter CFI_INSTR_WIDTH     = 32,
+    parameter CFI_CAPACITY        = 160,
     parameter CORE_TYPE           = 0,
     parameter USE_FPU             = 1,
     parameter USE_HWPE            = 1,
@@ -32,7 +32,7 @@ module fc_subsystem #(
     input  logic                      test_en_i,
 
     XBAR_TCDM_BUS_CFI.Master          l2_data_master,
-    XBAR_TCDM_BUS_CFI.Master          l2_instr_master, //BACCTODO
+    XBAR_TCDM_BUS_CFI.Master          l2_instr_master,
     XBAR_TCDM_BUS_CFI.Master          l2_hwpe_master [NB_HWPE_PORTS-1:0],
     APB_BUS.Slave                     apb_slave_eu,
     APB_BUS.Slave                     apb_slave_hwpe,
@@ -74,7 +74,6 @@ module fc_subsystem #(
     logic fetch_en_eu  ;
 
     //Core Instr Bus
-    // BACCTODO instr_width
     logic [               31:0] core_instr_addr;
     logic [CFI_INSTR_WIDTH-1:0] core_instr_rdata;
     logic                       core_instr_req, core_instr_gnt, core_instr_rvalid, core_instr_err;
@@ -113,7 +112,7 @@ module fc_subsystem #(
     assign l2_instr_master.add   = core_instr_addr;
     assign l2_instr_master.wen   = 1'b1;
     assign l2_instr_master.wdata = '0;
-    assign l2_instr_master.be    = 4'b1111;
+    assign l2_instr_master.be    = 5'b11111; //BACCTODO Byteenable is a constant here
     assign core_instr_gnt        = l2_instr_master.gnt;
     assign core_instr_rvalid     = l2_instr_master.r_valid;
     assign core_instr_rdata      = l2_instr_master.r_rdata;
@@ -126,8 +125,8 @@ module fc_subsystem #(
     if ( USE_IBEX == 0) begin: FC_CORE
     assign boot_addr = boot_addr_i;
     riscv_core #(
-        .INSTR_RDATA_WIDTH   ( CFI_INSTR_WIDTH     ), // BACCTODO
-        .CFI_CAPACITY        ( CFI_CAPACITY        ), // BACCTODO
+        .INSTR_RDATA_WIDTH   ( CFI_INSTR_WIDTH     ),
+        .CFI_CAPACITY        ( CFI_CAPACITY        ),
         .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
         .PULP_SECURE         ( 1                   ),
         .PULP_CLUSTER        ( 0                   ),

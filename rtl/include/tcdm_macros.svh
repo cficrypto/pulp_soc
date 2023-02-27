@@ -24,13 +24,13 @@ logic                  signal_prefix``_r_opc; \
 logic [31:0]           signal_prefix``_r_rdata; \
 logic                  signal_prefix``_r_valid;
 
-//BACCTODO // CFI_INSTR_WIDTH was undefined here
+//BACCTODO byteenable length is constant here
   `define TCDM_CFI_EXPLODE_ARRAY_DECLARE(signal_prefix, length) \
 logic [length-1:0]                           signal_prefix``_req; \
 logic [length-1:0][31:0]                     signal_prefix``_add; \
 logic [length-1:0]                           signal_prefix``_wen; \
 logic [length-1:0][`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_wdata; \
-logic [length-1:0][3:0]                      signal_prefix``_be; \
+logic [length-1:0][4:0]                      signal_prefix``_be; \
 logic [length-1:0]                           signal_prefix``_gnt; \
 logic [length-1:0]                           signal_prefix``_r_opc; \
 logic [length-1:0][`CFI_INSTR_WIDTH_DEF-1:0] signal_prefix``_r_rdata; \

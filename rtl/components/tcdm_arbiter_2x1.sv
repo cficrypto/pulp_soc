@@ -19,6 +19,7 @@ module tcdm_arbiter_2x1
     input logic                   clk_i,
     input logic                   rst_ni,
 
+    // BACCTODO this has to be extended for jtag usage (probably)
     XBAR_TCDM_BUS.Slave           tcdm_bus_1_i,
     XBAR_TCDM_BUS.Slave           tcdm_bus_0_i,
     XBAR_TCDM_BUS.Master          tcdm_bus_o
