@@ -13,6 +13,9 @@
 module fc_subsystem #(
     parameter CFI_INSTR_WIDTH     = 32,
     parameter CFI_CAPACITY        = 160,
+    parameter CFI_CFG_BITS        = 4,
+    parameter CFI_ENABLE          = 1,
+    parameter CFI_KEY             = 160'hefcdab9078563412000000000000000000000000,
     parameter CORE_TYPE           = 0,
     parameter USE_FPU             = 1,
     parameter USE_HWPE            = 1,
@@ -107,7 +110,6 @@ module fc_subsystem #(
     assign core_data_err         = l2_data_master.r_opc;
 
 
-    // BACCTODO instr_width in L2 instr master
     assign l2_instr_master.req   = core_instr_req;
     assign l2_instr_master.add   = core_instr_addr;
     assign l2_instr_master.wen   = 1'b1;
@@ -127,6 +129,9 @@ module fc_subsystem #(
     riscv_core #(
         .INSTR_RDATA_WIDTH   ( CFI_INSTR_WIDTH     ),
         .CFI_CAPACITY        ( CFI_CAPACITY        ),
+        .CFI_CFG_BITS        ( CFI_CFG_BITS        ),
+        .CFI_ENABLE          ( CFI_ENABLE          ),
+        .CFI_KEY             ( CFI_KEY             ),
         .N_EXT_PERF_COUNTERS ( N_EXT_PERF_COUNTERS ),
         .PULP_SECURE         ( 1                   ),
         .PULP_CLUSTER        ( 0                   ),
