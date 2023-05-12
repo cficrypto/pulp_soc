@@ -95,7 +95,9 @@ module interleaved_crossbar
     //Interleaved Output Port Selection
     logic [NR_MASTER_PORTS-1:0] [PORT_SEL_WIDTH-1:0] port_sel;
     for (genvar i = 0; i < NR_MASTER_PORTS; i++) begin
-        assign port_sel[i] = master_ports[i].add[$clog2(BE_WIDTH)+PORT_SEL_WIDTH-1:$clog2(BE_WIDTH)];
+        assign port_sel[i] = master_ports[i].add[$clog2(NR_SLAVE_PORTS)+PORT_SEL_WIDTH-1:$clog2(NR_SLAVE_PORTS)];
+        //BACCTODO port_sel is calculated wrong if BE_WIDTH != NR_RAM_BANKS 
+        // -> removing the ceil does not generally solve the issue, but it should work for us
     end
 
     //Crossbar instantiation
