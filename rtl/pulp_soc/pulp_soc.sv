@@ -712,11 +712,17 @@ module pulp_soc import dm::*; #(
     );
 `endif
 
+`ifdef CFI_ENABLE_DEF
+    localparam CFI_ENABLE = 1;
+`else
+    localparam CFI_ENABLE = 0;
+`endif
+
     fc_subsystem #(
         .CFI_INSTR_WIDTH (`CFI_INSTR_WIDTH_DEF ),
         .CFI_CAPACITY    (`CFI_CAPACITY_DEF    ),
         .CFI_CFG_BITS    (`CFI_CFG_BITS_DEF    ),
-        .CFI_ENABLE      (`CFI_ENABLE_DEF      ),
+        .CFI_ENABLE      ( CFI_ENABLE          ),
         .CFI_KEY         (`CFI_KEY_DEF         ),
         .CORE_TYPE       ( CORE_TYPE           ),
         .USE_FPU         ( USE_FPU             ),

@@ -82,7 +82,8 @@ assign a.r_opc = b.r_opc ; \
 assign a.r_rdata= b.r_rdata ; \
 assign a.r_valid = b.r_valid ;
 
-  `define TCDM_ASSIGN_INTF_32_CFI(b, a) \
+  `ifdef CFI_ENABLE_DEF
+    `define TCDM_ASSIGN_INTF_32_CFI(b, a) \
 assign b.req  = a.req; \
 assign b.add  = a.add; \
 assign b.wen  = a.wen; \
@@ -93,8 +94,13 @@ assign a.r_opc = b.r_opc ; \
 assign a.r_rdata[31:0]= b.r_rdata ; \
 assign a.r_rdata[`CFI_INSTR_WIDTH_DEF-1:32]= {`CFI_INSTR_WIDTH_DEF-32{`CFI_FILL_DEF}} ; \
 assign a.r_valid = b.r_valid ;
+  `else
+    `define TCDM_ASSIGN_INTF_32_CFI(b, a) \
+`TCDM_ASSIGN_INTF(b, a)
+  `endif
 
-  `define TCDM_ASSIGN_INTF_CFI_32(b, a) \
+  `ifdef CFI_ENABLE_DEF
+    `define TCDM_ASSIGN_INTF_CFI_32(b, a) \
 assign b.req  = a.req; \
 assign b.add  = a.add; \
 assign b.wen  = a.wen; \
@@ -105,6 +111,10 @@ assign a.gnt = b.gnt ; \
 assign a.r_opc = b.r_opc ; \
 assign a.r_rdata= b.r_rdata[31:0] ; \
 assign a.r_valid = b.r_valid ;
+  `else
+    `define TCDM_ASSIGN_INTF_CFI_32(b, a) \
+`TCDM_ASSIGN_INTF(b, a)
+  `endif
 
   `define TCDM_ASSIGN(b, postfix_b, a, postfix_a) \
 assign b``_req postfix_b  = a``_req postfix_a; \
