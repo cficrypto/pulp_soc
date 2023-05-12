@@ -60,7 +60,7 @@ module l2_ram_multi_bank #(
             .CLK   ( clk_i                                             ),
             .INITN ( 1'b1                                              ),
             .CEN   ( ~mem_slave[i].req                                 ),
-            .BEN   ( ~mem_slave[i].be                                  ),
+            .BEN   ( ~mem_slave[i].be[`CFI_BEN_DEF-1:0]                ),
             .WEN   ( mem_slave[i].wen                                  ),
             .A     ( interleaved_addresses[i][INTL_MEM_ADDR_WIDTH+2+$clog2(NB_BANKS)-1:2+$clog2(NB_BANKS)] ), // Remove LSBs for byte addressing (2 bits)
                                                                                                               // and bank selection (log2(NB_BANKS) bits)
@@ -76,7 +76,7 @@ module l2_ram_multi_bank #(
                .rst_ni,
                .csn_i   (~mem_slave[i].req                                 ),
                .wen_i   (mem_slave[i].wen                                  ),
-               .be_i    (mem_slave[i].be                                   ),
+               .be_i    (mem_slave[i].be[`CFI_BEN_DEF-1:0]                 ),
                .addr_i  (interleaved_addresses[i][INTL_MEM_ADDR_WIDTH-1+2+$clog2(NB_BANKS):2+$clog2(NB_BANKS)] ), // Remove LSBs for byte addressing (2 bits)
                                                                                                                   // and bank selection (log2(NB_BANKS) bits)
                .wdata_i (mem_slave[i].wdata                                ),
@@ -107,7 +107,7 @@ module l2_ram_multi_bank #(
       .CLK   ( clk_i                                 ),
       .INITN ( 1'b1                                  ),
       .CEN   ( ~mem_pri_slave[0].req                 ),
-      .BEN   ( ~mem_pri_slave[0].be                  ),
+      .BEN   ( ~mem_pri_slave[0].be[`CFI_BEN_DEF-1:0]),
       .WEN   ( mem_pri_slave[0].wen                  ),
       .A     ( pri0_address[PRI0_MEM_ADDR_WIDTH+1:2] ), //Convert from byte to word addressing
       .D     ( mem_pri_slave[0].wdata                ),
@@ -120,7 +120,7 @@ module l2_ram_multi_bank #(
         .rst_ni,
         .csn_i   ( ~mem_pri_slave[0].req                 ),
         .wen_i   ( mem_pri_slave[0].wen                  ),
-        .be_i    ( mem_pri_slave[0].be                   ),
+        .be_i    ( mem_pri_slave[0].be[`CFI_BEN_DEF-1:0] ),
         .addr_i  ( pri0_address[PRI0_MEM_ADDR_WIDTH+1:2] ), //Convert from byte to word addressing
         .wdata_i ( mem_pri_slave[0].wdata                ),
         .rdata_o ( mem_pri_slave[0].r_rdata              )
@@ -150,7 +150,7 @@ module l2_ram_multi_bank #(
       .CLK   ( clk_i                                 ),
       .INITN ( 1'b1                                  ),
       .CEN   ( ~mem_pri_slave[1].req                 ),
-      .BEN   ( ~mem_pri_slave[1].be                  ),
+      .BEN   ( ~mem_pri_slave[1].be[`CFI_BEN_DEF-1:0]),
       .WEN   ( mem_pri_slave[1].wen                  ),
       .A     ( pri1_address[PRI1_MEM_ADDR_WIDTH+1:2] ), //Convert from byte to word addressing
       .D     ( mem_pri_slave[1].wdata                ),
@@ -163,7 +163,7 @@ module l2_ram_multi_bank #(
         .rst_ni,
         .csn_i   ( ~mem_pri_slave[1].req                 ),
         .wen_i   ( mem_pri_slave[1].wen                  ),
-        .be_i    ( mem_pri_slave[1].be                   ),
+        .be_i    ( mem_pri_slave[1].be[`CFI_BEN_DEF-1:0] ),
         .addr_i  ( pri1_address[PRI1_MEM_ADDR_WIDTH+1:2] ), //Convert from byte to word addressing
         .wdata_i ( mem_pri_slave[1].wdata                ),
         .rdata_o ( mem_pri_slave[1].r_rdata              )
