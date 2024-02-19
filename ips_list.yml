@@ -72,8 +72,8 @@ jtag_pulp:
   commit: v0.1
   domain: [soc]
 riscv:
-  commit: b20eb3a3ff6c0dcdf4ce5aa179e91f6ef6267276
-  server: https://github.com
+  commit: 4247d804ea809af93a7797d210fbbac47df92a84
+  server: git@github.com
   group:  cficrypto
   domain: [cluster, soc]
 ibex:
